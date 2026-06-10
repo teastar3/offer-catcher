@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offer 捕手</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="logo-wrap">
+      <div class="logo">◆</div>
+      <div>
+        <h1>Offer 捕手</h1>
+        <p class="subtitle">AI 求职智能匹配</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Tab Bar ===== -->
+  <nav class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" data-tab="home">
+      <span class="tab-icon">⌂</span><span>主页</span>
+    </button>
+    <button class="tab-btn" data-tab="results">
+      <span class="tab-icon">◈</span><span>匹配</span>
+    </button>
+    <button class="tab-btn" data-tab="history">
+      <span class="tab-icon">◎</span><span>记录</span>
+    </button>
+    <button class="tab-btn" data-tab="settings">
+      <span class="tab-icon">⚙</span><span>设置</span>
+    </button>
+  </nav>
+
+  <!-- ===== Tab Content ===== -->
+  <main class="tab-content">
+
+    <!-- ---- HOME ---- -->
+    <section id="tab-home" class="tab-pane active">
+      <div class="card">
+        <h3>简历上传</h3>
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-icon">↑</div>
+          <p>拖拽简历到此处 或 <span class="link">点击选择</span></p>
+          <span class="badge">PDF / DOCX</span>
+        </div>
+        <input type="file" id="resume-input" accept=".pdf,.doc,.docx" hidden>
+        <div id="resume-preview"></div>
+      </div>
+
+      <div class="card">
+        <h3>岗位扫描 & 智能匹配</h3>
+        <p class="card-desc">在 Boss 直聘搜索页打开时，一键扫描全部岗位并 AI 匹配</p>
+        <button class="btn btn-primary btn-full" id="btn-scan" disabled>
+          <span class="btn-label">开始扫描 & 匹配</span>
+        </button>
+        <div class="progress-bar" id="match-progress" style="display:none">
+          <div class="progress-fill" id="match-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="scan-status" id="scan-status">
+          <span class="dot dot-idle"></span><span>等待操作</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>匹配概览</h3>
+        <div class="stats-row">
+          <div class="stat"><span class="stat-num" id="stat-scanned">0</span><span class="stat-lbl">已扫描</span></div>
+          <div class="stat accent"><span class="stat-num" id="stat-high">0</span><span class="stat-lbl">高匹配</span></div>
+          <div class="stat"><span class="stat-num" id="stat-sent">0</span><span class="stat-lbl">已发送</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- RESULTS ---- -->
+    <section id="tab-results" class="tab-pane">
+      <div class="results-header" id="results-header" style="display:none">
+        <span class="results-count" id="results-count"></span>
+        <select class="input input-sm" id="results-sort">
+          <option value="score-desc">匹配度 高→低</option>
+          <option value="score-asc">匹配度 低→高</option>
+        </select>
+      </div>
+      <div class="empty-state" id="results-empty">
+        <div class="empty-icon">◈</div>
+        <p>暂无匹配结果</p>
+        <p class="hint">上传简历并扫描岗位后开始智能匹配</p>
+      </div>
+      <div id="results-list"></div>
+    </section>
+
+    <!-- ---- HISTORY ---- -->
+    <section id="tab-history" class="tab-pane">
+      <div class="empty-state" id="history-empty">
+        <div class="empty-icon">◎</div>
+        <p>暂无发送记录</p>
+        <p class="hint">对高匹配岗位发送招呼语后将在此记录</p>
+      </div>
+      <div id="history-list"></div>
+    </section>
+
+    <!-- ---- SETTINGS ---- -->
+    <section id="tab-settings" class="tab-pane">
+      <div class="card">
+        <h3>快速选择服务商</h3>
+        <div class="preset-grid" id="preset-grid"></div>
+      </div>
+      <div class="card">
+        <h3>API 配置</h3>
+        <label class="form-label">Base URL</label>
+        <input type="text" id="input-base-url" class="input" placeholder="https://api.deepseek.com/v1" spellcheck="false">
+        <label class="form-label">API Key</label>
+        <div class="input-row">
+          <input type="password" id="input-api-key" class="input" placeholder="sk-..." spellcheck="false" autocomplete="off">
+          <button class="btn-icon" id="btn-toggle-key" title="显示/隐藏">⦿</button>
+        </div>
+        <label class="form-label">模型名称</label>
+        <input type="text" id="input-model" class="input" placeholder="deepseek-chat" spellcheck="false">
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="btn-test"><span class="btn-label">测试连接</span></button>
+          <button class="btn btn-primary" id="btn-save"><span class="btn-label">保存配置</span></button>
+        </div>
+        <div class="api-status" id="api-status">
+          <span class="dot dot-idle" id="api-dot"></span>
+          <span id="api-status-text">未配置</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Greeting Modal ===== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>打招呼确认</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-job-info" id="modal-job-info"></div>
+        <label class="form-label">招呼语 <span class="text-muted">（可编辑）</span></label>
+        <textarea id="modal-greeting" class="input textarea" rows="5" maxlength="300" placeholder="正在生成招呼语…"></textarea>
+        <div class="char-count"><span id="char-count">0</span> / 300</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel">取消</button>
+        <button class="btn btn-primary" id="modal-confirm" disabled>
+          <span class="btn-label">确认发送</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="status-bar">
+    <span id="footer-api">● 未连接</span>
+    <span>v2.0.0</span>
+  </footer>
+
+  <!-- ===== Scripts ===== -->
+   <script src="libs/pdf.min.js"></script>
+  <script src="libs-init.js"></script>
+  <script src="libs/mammoth.browser.min.js"></script>
+  <script src="ai-engine.js"></script>
+  <script src="popup.js"></script>
+
+</body>
+</html>

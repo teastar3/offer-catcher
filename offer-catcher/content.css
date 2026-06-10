@@ -1,0 +1,133 @@
+/* ============================================================
+   Offer 捕手 — 注入 Boss 直聘的浮窗样式
+   所有类名以 oc- 为前缀，避免样式冲突
+   ============================================================ */
+
+.oc-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 280px;
+  background: #0c0c18;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+  z-index: 99999;
+  font-family: 'Outfit', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #e4e4f0;
+  font-size: 12px;
+  overflow: hidden;
+  animation: oc-slide-up 0.35s ease;
+}
+
+@keyframes oc-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.oc-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  cursor: grab;
+  user-select: none;
+}
+
+.oc-logo {
+  font-weight: 600;
+  font-size: 12px;
+  background: linear-gradient(135deg, #00e8a1, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.oc-close {
+  background: none;
+  border: none;
+  color: #5a5a7a;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 2px;
+  line-height: 1;
+}
+.oc-close:hover { color: #e4e4f0; }
+
+.oc-panel-body {
+  padding: 12px 14px;
+}
+
+.oc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.oc-label {
+  color: #5a5a7a;
+  font-size: 11px;
+}
+
+.oc-val {
+  color: #e4e4f0;
+  font-size: 12px;
+  font-weight: 500;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oc-hint {
+  font-size: 10px;
+  color: #5a5a7a;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.oc-status-row {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.oc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.oc-dot-loading {
+  background: #00e8a1;
+  animation: oc-pulse 0.8s infinite;
+}
+
+@keyframes oc-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+.oc-btn-stop {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px;
+  background: rgba(255,71,87,0.1);
+  border: 1px solid rgba(255,71,87,0.2);
+  border-radius: 8px;
+  color: #ff4757;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.oc-btn-stop:hover {
+  background: rgba(255,71,87,0.2);
+}
